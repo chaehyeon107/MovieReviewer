@@ -1,4 +1,4 @@
-export default function Modal({ open, onClose, children, title }) {
+export default function SearchModal({ open, onClose, children, title }) {
   if (!open) return null;
 
   function onKey(e) {

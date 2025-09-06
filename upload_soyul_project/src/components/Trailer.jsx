@@ -1,6 +1,6 @@
 import { IMG, movieTitle } from "../lib/tmdb.js";
 
-export default function Hero({ movie, onOpenTrailer }) {
+export default function Trailer({ movie, onOpenTrailer }) {
   if (!movie) return null; // movie가 없으면 렌더링 안 함
   const title = movieTitle(movie);
 

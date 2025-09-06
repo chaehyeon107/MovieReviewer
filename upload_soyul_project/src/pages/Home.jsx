@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
-import Modal from "../components/Modal.jsx";
-import Hero from "../components/Hero.jsx";
+import SearchModal from "../components/SearchModal.jsx";
+import Trailer from "../components/Trailer.jsx";
 import PosterGrid from "../components/PosterGrid.jsx";
 import Container from "../components/Container.jsx";
 import {
@@ -63,7 +63,7 @@ export default function Home() {
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
       <Navbar />
       <Container className="pb-16">
-        <Hero movie={hero} onOpenTrailer={handleOpenTrailer} />
+        <Trailer movie={hero} onOpenTrailer={handleOpenTrailer} />
 
         {/* 1) 인기 콘텐츠 1줄 */}
         <PosterGrid title="인기 콘텐츠" movies={popular} rows={1} onSelect={handleOpenText} />
@@ -86,7 +86,7 @@ export default function Home() {
       </Container>
 
       {/* 예고편 모달 */}
-      <Modal
+      <SearchModal
         open={openTrailer}
         onClose={() => setOpenTrailer(false)}
         title={selected ? movieTitle(selected) : "예고편"}
@@ -105,10 +105,10 @@ export default function Home() {
         ) : (
           <p className="text-neutral-300">예고편을 찾지 못했어요 😅</p>
         )}
-      </Modal>
+      </SearchModal>
 
       {/* 제목 + 줄거리 모달 */}
-      <Modal
+      <SearchModal
         open={openText}
         onClose={() => setOpenText(false)}
         title={selected ? movieTitle(selected) : "정보"}
@@ -116,7 +116,7 @@ export default function Home() {
         <p className="whitespace-pre-line leading-relaxed text-neutral-200">
           {selected?.overview || "줄거리 정보가 없습니다."}
         </p>
-      </Modal>
+      </SearchModal>
     </div>
   );
 }
