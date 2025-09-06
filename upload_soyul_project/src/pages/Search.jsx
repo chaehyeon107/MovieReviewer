@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import PosterGrid from "../components/PosterGrid.jsx";
-import SearchModal from "../components/SearchModal.jsx";
+import Modal from "../components/Modal.jsx";
 import { searchMovies, movieTitle } from "../lib/tmdb.js";
 
 export default function Search() {
@@ -42,11 +42,11 @@ export default function Search() {
           onSelect={(m) => { setSelected(m); setOpen(true); }}
         />
 
-        <SearchModal open={open} onClose={() => setOpen(false)} title={selected ? movieTitle(selected) : "정보"}>
+        <Modal open={open} onClose={() => setOpen(false)} title={selected ? movieTitle(selected) : "정보"}>
           <p className="whitespace-pre-line leading-relaxed text-neutral-200">
             {selected?.overview || "줄거리 정보가 없습니다."}
           </p>
-        </SearchModal>
+        </Modal>
       </Container>
     </div>
   );
