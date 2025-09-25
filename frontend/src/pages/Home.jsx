@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Modal from "../components/Modal.jsx";
-import Hero from "../components/Hero.jsx";
+import Hero from "../components/Trailer.jsx";
 import PosterGrid from "../components/PosterGrid.jsx";
 import Container from "../components/Container.jsx";
 import {
