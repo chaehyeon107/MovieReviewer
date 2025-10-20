@@ -24,13 +24,13 @@ export default function Home() {
   const [openText, setOpenText] = useState(false);
   const [selected, setSelected] = useState(null);
 
-  // 원하는 순서
+  // 원하는 표시 순서
   const GENRE_ORDER = ["범죄", "스릴러", "SF", "호러", "로맨스", "어린이", "다큐멘터리"];
 
   useEffect(() => {
     (async () => {
       const [trend, pop] = await Promise.all([getTrending(), getPopular()]);
-      setHero(trend[0] ?? null);
+      setHero(trend?.[0] ?? null);
       setPopular(pop);
 
       setLoadingGenres(true);
@@ -38,11 +38,13 @@ export default function Home() {
         GENRE_ORDER.map(async (name) => {
           const id = GENRES[name];
           const list = await getPopularByGenre(id);
-          return [id, list]; // ← as const 제거
+          return [id, list];
         })
       );
       const map = {};
-      pairs.forEach(([id, list]) => (map[id] = list));
+      pairs.forEach(([id, list]) => {
+        map[id] = list;
+      });
       setByGenre(map);
       setLoadingGenres(false);
     })();
@@ -66,23 +68,35 @@ export default function Home() {
         <Hero movie={hero} onOpenTrailer={handleOpenTrailer} />
 
         {/* 1) 인기 콘텐츠 1줄 */}
-        <PosterGrid title="인기 콘텐츠" movies={popular} rows={1} onSelect={handleOpenText} />
+              <PosterGrid
+                title="인기 콘텐츠"
+                movies={popular}
+                rows={1}
+                onSelect={handleOpenTrailer}  // ✅ 클릭 시 예고편 모달 열기
+               />
 
         {/* 2) 장르별 2줄씩 */}
-        {GENRE_ORDER.map((name) => {
-          const id = GENRES[name];
-          const movies = byGenre[id] || [];
-          return (
-            <PosterGrid
-              key={id}
-              title={`인기 콘텐츠 — ${name}`}
-              movies={movies}
-              rows={2}
-              loading={loadingGenres && movies.length === 0}
-              onSelect={handleOpenText}
-            />
-          );
-        })}
+          {loadingGenres ? (
+            <p className="text-center mt-10">🎬 장르별 콘텐츠 불러오는 중...</p>
+          ) : (
+            GENRE_ORDER.map((name) => {
+              const id = GENRES[name];
+              const movies = byGenre[id] || [];
+              return (
+              <PosterGrid
+                key={id}
+                title={`인기 콘텐츠 — ${name}`}
+                movies={movies}
+                rows={2}
+                loading={false}
+                onSelect={handleOpenTrailer}   // ✅ 클릭 시 예고편 모달
+              />
+
+              );
+            })
+          )}
+
+
       </Container>
 
       {/* 예고편 모달 */}

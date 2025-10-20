@@ -9,10 +9,29 @@ export const IMG = {
 };
 
 async function get(url) {
-  const res = await fetch(`${API}${url}${url.includes("?") ? "&" : "?"}api_key=${KEY}&language=${lang}`);
+  const res = await fetch(
+    `${API}${url}${url.includes("?") ? "&" : "?"}api_key=${KEY}&language=${lang}`
+  );
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
+
+export async function getMovieVideos(id) {
+  try {
+    const data = await get(`/movie/${id}/videos`);
+    const video =
+      data.results.find(
+        (v) =>
+          v.site === "YouTube" &&
+          ["Trailer", "Teaser", "Clip", "Featurette"].includes(v.type)
+      ) || null;
+    return video ? video.key : "YoHD9XEInc0"; // ✅ fallback 추가!
+  } catch (err) {
+    console.error("🎬 예고편 로드 실패:", err);
+    return "YoHD9XEInc0"; // ✅ fallback 추가!
+  }
+}
+
 
 export async function getTrending() {
   const data = await get(`/trending/movie/week`);
@@ -22,14 +41,6 @@ export async function getTrending() {
 export async function getPopular(page = 1) {
   const data = await get(`/movie/popular?page=${page}`);
   return data.results;
-}
-
-export async function getMovieVideos(id) {
-  const data = await get(`/movie/${id}/videos`);
-  const pick = (types) =>
-    data.results.find((v) => v.site === "YouTube" && types.some((t) => new RegExp(t, "i").test(v.type)));
-  const v = pick(["Trailer", "Teaser"]) || pick(["Clip", "Featurette"]) || data.results.find((x) => x.site === "YouTube");
-  return v ? v.key : null;
 }
 
 export async function getMovieDetails(id) {
@@ -59,6 +70,8 @@ export async function getPopularByGenre(genreId, page = 1) {
 
 export async function searchMovies(query, page = 1) {
   const q = encodeURIComponent(query);
-  const data = await get(`/search/movie?query=${q}&page=${page}&include_adult=false`);
+  const data = await get(
+    `/search/movie?query=${q}&page=${page}&include_adult=false`
+  );
   return data.results;
 }
