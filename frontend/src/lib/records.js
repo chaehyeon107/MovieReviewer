@@ -1,6 +1,26 @@
 // src/lib/records.js
 import { IMG, searchMovies } from "./tmdb.js";
 
+const RECORDS_KEY = "moviereviewer:records";
+
+function readRecordsFromStorage() {
+  try {
+    const stored = localStorage.getItem(RECORDS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (e) {
+    console.error("Failed to read records from localStorage", e);
+    return [];
+  }
+}
+
+function writeRecordsToStorage(records) {
+  try {
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+  } catch (e) {
+    console.error("Failed to write records to localStorage", e);
+  }
+}
+
 /**
  * 레코드 스키마(예상)
  * { id, title, rating, review, createdAt, tmdbId?, poster_path? }
@@ -30,32 +50,7 @@ async function resolvePosterPath(rec) {
 }
 
 export async function getRecords() {
-  // TODO: 여기를 실제 백엔드로 교체 (e.g., fetch("/api/records").then(r=>r.json()))
-  // 데모용 목데이터
-  const mock = [
-    {
-      id: "r3",
-      title: "라스트 굿 맨",
-      rating: 4.0,
-      review: "액션 합이 좋아서 생각보다 재밌게 봄.",
-      createdAt: "2025-09-20T14:13:00Z",
-      // poster_path: "/abcd.jpg", // 있으면 바로 사용
-    },
-    {
-      id: "r2",
-      title: "컨저링: 마지막 의식",
-      rating: 3.5,
-      review: "공포 연출은 좋은데 스토리는 무난.",
-      createdAt: "2025-09-18T21:00:00Z",
-    },
-    {
-      id: "r1",
-      title: "우주전쟁",
-      rating: 4.5,
-      review: "리듬감 훌륭. 사운드가 특히 좋았음.",
-      createdAt: "2025-09-10T09:30:00Z",
-    },
-  ];
+  const mock = readRecordsFromStorage();
 
   // 최신순 정렬
   mock.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -69,6 +64,19 @@ export async function getRecords() {
   );
 
   return withPoster;
+}
+
+export async function saveRecord(newRecord) {
+  const records = readRecordsFromStorage();
+  const now = new Date().toISOString();
+  const recordToSave = {
+    id: `r${Date.now()}`,
+    ...newRecord,
+    createdAt: now,
+  };
+  const updatedRecords = [recordToSave, ...records];
+  writeRecordsToStorage(updatedRecords);
+  return recordToSave;
 }
 
 export function imgUrlFromPosterPath(poster_path) {

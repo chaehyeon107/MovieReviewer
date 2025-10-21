@@ -5,10 +5,12 @@ import "./index.css";
 import Home from "./pages/Home.jsx";
 import Logs from "./pages/Logs.jsx";
 import Search from "./pages/Search.jsx";
+import NewLog from "./pages/NewLog.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
   { path: "/logs", element: <Logs /> },
+  { path: "/logs/new", element: <NewLog /> },
   { path: "/search", element: <Search /> },
 ]);
 

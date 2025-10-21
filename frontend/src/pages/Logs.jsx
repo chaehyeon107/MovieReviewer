@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import Modal from "../components/Modal.jsx";
@@ -6,6 +7,7 @@ import RecordGrid from "../components/RecordGrid.jsx";
 import { getRecords } from "../lib/records.js";
 
 export default function Logs() {
+  const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState([]);
   const [open, setOpen] = useState(false);
@@ -39,10 +41,7 @@ export default function Logs() {
           <h1 className="text-xl font-bold">기록</h1>
           <button
             className="rounded-lg bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-neutral-200"
-            onClick={() => {
-              // TODO: 추후 기록작성 라우트로 교체 (예: /logs/new)
-              alert("기록작성 탭은 추후 구현 예정입니다.");
-            }}
+            onClick={() => nav("/logs/new")}
           >
             기록하기
           </button>
